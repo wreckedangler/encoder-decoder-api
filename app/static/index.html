@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Verschlüsselungs-App</title>
+</head>
+<body>
+<h1>Datei Verschlüsseln/Entschlüsseln</h1>
+<form id="encrypt-form">
+    <h2>Verschlüsseln</h2>
+    <input type="file" id="encrypt-file" required><br><br>
+    <input type="password" id="encrypt-password" placeholder="Passwort" required><br><br>
+    <button type="submit">Datei verschlüsseln</button>
+</form>
+
+<hr>
+
+<form id="decrypt-form">
+    <h2>Entschlüsseln</h2>
+    <input type="file" id="decrypt-file" required><br><br>
+    <input type="password" id="decrypt-password" placeholder="Passwort" required><br><br>
+    <button type="submit">Datei entschlüsseln</button>
+</form>
+
+<script>
+    document.getElementById('encrypt-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var fileInput = document.getElementById('encrypt-file');
+        var passwordInput = document.getElementById('encrypt-password');
+        var formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('password', passwordInput.value);
+
+        fetch('http://localhost:8080/encrypt', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                } else {
+                    return response.json().then(err => { throw err; });
+                }
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = fileInput.files[0].name + '.enc';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            })
+            .catch(error => {
+                alert('Fehler beim Verschlüsseln: ' + error.error);
+            });
+    });
+
+    document.getElementById('decrypt-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var fileInput = document.getElementById('decrypt-file');
+        var passwordInput = document.getElementById('decrypt-password');
+        var formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('password', passwordInput.value);
+
+        fetch('http://localhost:8080/decrypt', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.blob();
+                } else {
+                    return response.json().then(err => { throw err; });
+                }
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = fileInput.files[0].name.replace(/\.enc$/, '');
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            })
+            .catch(error => {
+                alert('Fehler beim Entschlüsseln: ' + error.error);
+            });
+    });
+</script>
+</body>
+</html>
