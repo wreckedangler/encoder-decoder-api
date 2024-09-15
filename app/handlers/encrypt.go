@@ -49,7 +49,7 @@ func EncryptHandler(c *gin.Context) {
 
 	// Metadaten in der Datenbank speichern
 	newFile := models.File{
-		Filename:   header.Filename,
+		Filename:   header.Filename + ".enc",
 		Filesize:   header.Size,
 		UploadDate: time.Now(),
 		Password:   string(hashedPassword),
