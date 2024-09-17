@@ -9,40 +9,101 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            flex-direction: column;
             margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            flex-direction: column;
         }
+
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .form-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
         form {
-            border: 1px solid #ccc;
-            padding: 20px;
+            background-color: #ffffff;
+            padding: 30px;
             border-radius: 10px;
-            background-color: #f9f9f9;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             width: 300px;
             text-align: center;
         }
-        h1, h2 {
-            margin: 0 0 20px;
+
+        h2 {
+            font-size: 1.5em;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            display: block;
+            margin: 10px auto;
+        }
+
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .form-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            form {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
 <body>
 <h1>EndeCrypt</h1>
 
-<form id="encrypt-form">
-    <h2>Verschlüsseln</h2>
-    <input type="file" id="encrypt-file" required><br><br>
-    <input type="password" id="encrypt-password" placeholder="Passwort" required><br><br>
-    <button type="submit">Datei verschlüsseln</button>
-</form>
+<div class="form-container">
+    <form id="encrypt-form">
+        <h2>Verschlüsseln</h2>
+        <input type="file" id="encrypt-file" required><br>
+        <input type="password" id="encrypt-password" placeholder="Passwort" required><br>
+        <button type="submit">Datei verschlüsseln</button>
+    </form>
 
-<hr>
-
-<form id="decrypt-form">
-    <h2>Entschlüsseln</h2>
-    <input type="file" id="decrypt-file" required><br><br>
-    <input type="password" id="decrypt-password" placeholder="Passwort" required><br><br>
-    <button type="submit">Datei entschlüsseln</button>
-</form>
+    <form id="decrypt-form">
+        <h2>Entschlüsseln</h2>
+        <input type="file" id="decrypt-file" required><br>
+        <input type="password" id="decrypt-password" placeholder="Passwort" required><br>
+        <button type="submit">Datei entschlüsseln</button>
+    </form>
+</div>
 
 <script>
     document.getElementById('encrypt-form').addEventListener('submit', function(e) {
