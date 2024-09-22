@@ -4,9 +4,11 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/sha256"
-	"encrypt-decrypt-api/app/models"
+	"encoding/hex"
 	"errors"
 	"net/http"
+
+	"encrypt-decrypt-api/app/models"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -31,9 +33,13 @@ func DecryptHandler(c *gin.Context) {
 		return
 	}
 
+	// Hash des empfangenen verschlüsselten Files berechnen
+	hash := sha256.Sum256(fileData)
+	fileHash := hex.EncodeToString(hash[:])
+
 	// Metadaten aus der Datenbank abrufen
 	var dbFile models.File
-	result := models.DB.Where("filename = ?", header.Filename).First(&dbFile)
+	result := models.DB.Where("file_hash = ?", fileHash).First(&dbFile)
 	if result.Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Datei nicht gefunden"})
 		return
@@ -54,10 +60,7 @@ func DecryptHandler(c *gin.Context) {
 	}
 
 	// Entschlüsselte Datei zurückgeben
-	originalFilename := header.Filename
-	if len(originalFilename) > 4 && originalFilename[len(originalFilename)-4:] == ".enc" {
-		originalFilename = originalFilename[:len(originalFilename)-4]
-	}
+	originalFilename := dbFile.OriginalFilename
 	c.Header("Content-Disposition", "attachment; filename="+originalFilename)
 	c.Data(http.StatusOK, "application/octet-stream", decryptedData)
 }

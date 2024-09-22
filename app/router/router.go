@@ -21,18 +21,11 @@ func NewRouter(allowedOrigins string) *gin.Engine {
 	// Neue Routen definieren
 	router.POST("/encrypt", handlers.EncryptHandler)
 	router.POST("/decrypt", handlers.DecryptHandler)
+	router.GET("/files", handlers.ListFilesHandler)
 
-	// Neue Route für Root-URL
+	// Route für Root-URL
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Willkommen zur Verschlüsselungs-API!")
-	})
-
-	// Weitere API-Routen
-	router.GET("/api/user", func(c *gin.Context) {
-		// Beispiel: statische Antwort für /api/user
-		c.JSON(http.StatusOK, gin.H{
-			"user": "John Doe",
-		})
 	})
 
 	return router
